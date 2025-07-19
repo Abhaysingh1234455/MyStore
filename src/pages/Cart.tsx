@@ -119,7 +119,7 @@ export const Cart = () => {
                   </div>
                 </div>
               </div>
-              <Link to="/checkout">
+              <Link to="/place-order">
                 <Button className="w-full">Proceed to Checkout</Button>
               </Link>
             </CardContent>
