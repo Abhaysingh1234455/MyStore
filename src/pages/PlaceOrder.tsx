@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
+import { CreditCard, Smartphone, Wallet, QrCode } from 'lucide-react';
 
 interface ShippingAddress {
   fullName: string;
@@ -25,6 +27,8 @@ export const PlaceOrder = () => {
   const { user } = useAuth();
   const { cartItems, getTotalPrice, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Paytm' | 'Card'>('UPI');
+  const [upiId, setUpiId] = useState('');
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     fullName: '',
     phoneNumber: '',
@@ -51,7 +55,29 @@ export const PlaceOrder = () => {
         return false;
       }
     }
+
+    // Validate payment method specific fields
+    if (paymentMethod === 'UPI' && !upiId.trim()) {
+      toast({
+        title: "Missing UPI ID",
+        description: "Please enter your UPI ID",
+        variant: "destructive",
+      });
+      return false;
+    }
+
     return true;
+  };
+
+  const simulatePayment = async (): Promise<{ success: boolean; referenceId: string }> => {
+    // Simulate payment processing delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Simulate 95% success rate
+    const success = Math.random() > 0.05;
+    const referenceId = success ? `${paymentMethod.toUpperCase()}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` : '';
+    
+    return { success, referenceId };
   };
 
   const handlePlaceOrder = async () => {
@@ -78,14 +104,34 @@ export const PlaceOrder = () => {
     setLoading(true);
 
     try {
-      // Create the order
+      // Process payment first
+      toast({
+        title: "Processing Payment",
+        description: `Processing ${paymentMethod} payment...`,
+      });
+
+      const { success, referenceId } = await simulatePayment();
+
+      if (!success) {
+        toast({
+          title: "Payment Failed",
+          description: "Payment was not successful. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Create the order with payment information
       const { data: orderData, error: orderError } = await supabase
         .from('orders')
         .insert({
           user_id: user.id,
           total_amount: getTotalPrice(),
           shipping_address: shippingAddress as any,
-          status: 'pending'
+          status: 'pending',
+          payment_method: paymentMethod,
+          payment_status: 'Success',
+          payment_reference: referenceId
         })
         .select()
         .single();
@@ -111,10 +157,10 @@ export const PlaceOrder = () => {
 
       toast({
         title: "Order Placed Successfully!",
-        description: `Order #${orderData.id.slice(0, 8)} has been placed`,
+        description: `Order #${orderData.id.slice(0, 8)} has been placed. Payment ID: ${referenceId}`,
       });
 
-      navigate('/');
+      navigate('/orders');
     } catch (error) {
       console.error('Error placing order:', error);
       toast({
@@ -147,7 +193,8 @@ export const PlaceOrder = () => {
       <h1 className="text-3xl font-bold mb-8">Place Your Order</h1>
       
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Shipping Address Form */}
+        <div className="space-y-6">
+          {/* Shipping Address Form */}
         <Card>
           <CardHeader>
             <CardTitle>Shipping Address</CardTitle>
@@ -228,6 +275,75 @@ export const PlaceOrder = () => {
             </div>
           </CardContent>
         </Card>
+
+          {/* Payment Method Selection */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5" />
+                Payment Method
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <RadioGroup
+                value={paymentMethod}
+                onValueChange={(value) => setPaymentMethod(value as 'UPI' | 'Paytm' | 'Card')}
+              >
+                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                  <RadioGroupItem value="UPI" id="upi" />
+                  <Smartphone className="w-5 h-5 text-blue-600" />
+                  <Label htmlFor="upi" className="cursor-pointer flex-1">
+                    UPI (Unified Payments Interface)
+                  </Label>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                  <RadioGroupItem value="Paytm" id="paytm" />
+                  <Wallet className="w-5 h-5 text-blue-500" />
+                  <Label htmlFor="paytm" className="cursor-pointer flex-1">
+                    Paytm Wallet
+                  </Label>
+                </div>
+                
+                <div className="flex items-center space-x-3 p-3 border rounded-lg">
+                  <RadioGroupItem value="Card" id="card" />
+                  <CreditCard className="w-5 h-5 text-green-600" />
+                  <Label htmlFor="card" className="cursor-pointer flex-1">
+                    Card Payment (Stripe)
+                  </Label>
+                </div>
+              </RadioGroup>
+
+              {paymentMethod === 'UPI' && (
+                <div className="mt-4">
+                  <Label htmlFor="upiId">UPI ID</Label>
+                  <Input
+                    id="upiId"
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value)}
+                    placeholder="Enter your UPI ID (e.g., user@paytm)"
+                  />
+                </div>
+              )}
+
+              {paymentMethod === 'Paytm' && (
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-700">
+                    You will be redirected to Paytm for payment processing.
+                  </p>
+                </div>
+              )}
+
+              {paymentMethod === 'Card' && (
+                <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                  <p className="text-sm text-green-700">
+                    Secure card payment processing via Stripe.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Order Summary */}
         <Card>

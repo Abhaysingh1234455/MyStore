@@ -37,6 +37,12 @@ export const Navbar = () => {
                     Orders
                   </Button>
                 </Link>
+                <Link to="/profile">
+                  <Button variant="ghost" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </Button>
+                </Link>
                 <Button variant="ghost" size="sm" onClick={signOut}>
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
