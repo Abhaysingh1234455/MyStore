@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,7 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { toast } from '@/hooks/use-toast';
-import { CreditCard, Smartphone, Wallet, QrCode } from 'lucide-react';
+import { CreditCard, Smartphone, Wallet, QrCode, MapPin, Edit } from 'lucide-react';
+import { formatCurrency } from '@/lib/currency';
 
 interface ShippingAddress {
   fullName: string;
@@ -27,6 +28,8 @@ export const PlaceOrder = () => {
   const { user } = useAuth();
   const { cartItems, getTotalPrice, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [addressLoading, setAddressLoading] = useState(true);
+  const [hasProfile, setHasProfile] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Paytm' | 'Card'>('UPI');
   const [upiId, setUpiId] = useState('');
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
@@ -38,6 +41,46 @@ export const PlaceOrder = () => {
     zipCode: '',
     country: '',
   });
+
+  useEffect(() => {
+    if (user) {
+      loadSavedAddress();
+    }
+  }, [user]);
+
+  const loadSavedAddress = async () => {
+    try {
+      setAddressLoading(true);
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user?.id)
+        .maybeSingle();
+
+      if (error && error.code !== "PGRST116") {
+        console.error('Error loading profile:', error);
+        return;
+      }
+
+      if (profileData && profileData.address) {
+        setHasProfile(true);
+        const address = profileData.address as any;
+        setShippingAddress({
+          fullName: profileData.full_name || '',
+          phoneNumber: profileData.phone || '',
+          streetAddress: address.street || '',
+          city: address.city || '',
+          state: address.state || '',
+          zipCode: address.zipCode || '',
+          country: address.country || 'India',
+        });
+      }
+    } catch (error) {
+      console.error('Error loading saved address:', error);
+    } finally {
+      setAddressLoading(false);
+    }
+  };
 
   const handleInputChange = (field: keyof ShippingAddress, value: string) => {
     setShippingAddress(prev => ({ ...prev, [field]: value }));
@@ -196,83 +239,115 @@ export const PlaceOrder = () => {
         <div className="space-y-6">
           {/* Shipping Address Form */}
         <Card>
-          <CardHeader>
-            <CardTitle>Shipping Address</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              Shipping Address
+            </CardTitle>
+            {hasProfile && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="text-xs"
+              >
+                <Edit className="w-3 h-3 mr-1" />
+                Edit Profile
+              </Button>
+            )}
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                value={shippingAddress.fullName}
-                onChange={(e) => handleInputChange('fullName', e.target.value)}
-                placeholder="Enter your full name"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input
-                id="phoneNumber"
-                value={shippingAddress.phoneNumber}
-                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                placeholder="Enter your phone number"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="streetAddress">Street Address</Label>
-              <Input
-                id="streetAddress"
-                value={shippingAddress.streetAddress}
-                onChange={(e) => handleInputChange('streetAddress', e.target.value)}
-                placeholder="Enter your street address"
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={shippingAddress.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  placeholder="City"
-                />
+            {addressLoading ? (
+              <div className="space-y-4 animate-pulse">
+                {[...Array(7)].map((_, i) => (
+                  <div key={i} className="h-10 bg-muted rounded"></div>
+                ))}
               </div>
-              
-              <div>
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  value={shippingAddress.state}
-                  onChange={(e) => handleInputChange('state', e.target.value)}
-                  placeholder="State"
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="zipCode">Zip Code</Label>
-                <Input
-                  id="zipCode"
-                  value={shippingAddress.zipCode}
-                  onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                  placeholder="Zip Code"
-                />
-              </div>
-              
-              <div>
-                <Label htmlFor="country">Country</Label>
-                <Input
-                  id="country"
-                  value={shippingAddress.country}
-                  onChange={(e) => handleInputChange('country', e.target.value)}
-                  placeholder="Country"
-                />
-              </div>
-            </div>
+            ) : (
+              <>
+                {hasProfile && (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <p className="text-sm text-green-700 font-medium">
+                      ✓ Address loaded from your profile
+                    </p>
+                  </div>
+                )}
+                
+                <div>
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    value={shippingAddress.fullName}
+                    onChange={(e) => handleInputChange('fullName', e.target.value)}
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Input
+                    id="phoneNumber"
+                    value={shippingAddress.phoneNumber}
+                    onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="streetAddress">Street Address</Label>
+                  <Input
+                    id="streetAddress"
+                    value={shippingAddress.streetAddress}
+                    onChange={(e) => handleInputChange('streetAddress', e.target.value)}
+                    placeholder="Enter your street address"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={shippingAddress.city}
+                      onChange={(e) => handleInputChange('city', e.target.value)}
+                      placeholder="City"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="state">State</Label>
+                    <Input
+                      id="state"
+                      value={shippingAddress.state}
+                      onChange={(e) => handleInputChange('state', e.target.value)}
+                      placeholder="State"
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="zipCode">Zip Code</Label>
+                    <Input
+                      id="zipCode"
+                      value={shippingAddress.zipCode}
+                      onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                      placeholder="Zip Code"
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="country">Country</Label>
+                    <Input
+                      id="country"
+                      value={shippingAddress.country}
+                      onChange={(e) => handleInputChange('country', e.target.value)}
+                      placeholder="Country"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
 
@@ -360,8 +435,8 @@ export const PlaceOrder = () => {
                       Quantity: {item.quantity}
                     </p>
                   </div>
-                  <p className="font-medium">
-                    ${(item.products.price * item.quantity).toFixed(2)}
+                  <p className="font-medium currency-inr">
+                    {formatCurrency(item.products.price * item.quantity)}
                   </p>
                 </div>
               ))}
@@ -370,13 +445,13 @@ export const PlaceOrder = () => {
               
               <div className="flex justify-between items-center text-lg font-bold">
                 <span>Total:</span>
-                <span>${getTotalPrice().toFixed(2)}</span>
+                <span className="currency-inr text-primary">{formatCurrency(getTotalPrice())}</span>
               </div>
               
               <Button 
                 onClick={handlePlaceOrder}
-                disabled={loading}
-                className="w-full"
+                disabled={loading || addressLoading}
+                className="w-full bg-gradient-primary hover:opacity-90 shadow-primary"
                 size="lg"
               >
                 {loading ? 'Placing Order...' : 'Place Order'}
