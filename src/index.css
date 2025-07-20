@@ -121,9 +121,25 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Currency formatting utilities */
+  /* Enhanced Currency formatting utilities */
   .currency-inr {
     font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px hsl(var(--primary) / 0.2);
+  }
+
+  .product-price {
+    font-size: 1.75rem;
+    font-weight: 900;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 4px hsl(var(--primary) / 0.3));
   }
 
   /* Animation utilities */
@@ -137,6 +153,10 @@ All colors MUST be HSL.
 
   .animate-slide-up {
     animation: slideUp 0.3s ease-out forwards;
+  }
+
+  .animate-bounce-gentle {
+    animation: bounce-gentle 2s infinite;
   }
 
   /* Interactive elements */
@@ -158,6 +178,22 @@ All colors MUST be HSL.
 
   .glass-effect {
     @apply backdrop-blur-md bg-white/80 border border-white/20;
+  }
+
+  .story-link {
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+
+  .shadow-soft {
+    box-shadow: 0 2px 8px -2px hsl(var(--primary) / 0.1);
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 20px hsl(var(--primary-glow) / 0.3);
   }
 }
 
@@ -191,5 +227,14 @@ All colors MUST be HSL.
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
   }
 }

@@ -85,18 +85,18 @@ const ProductCard = ({ id, name, price, image_url, images, stock_quantity }: Pro
           
           <div className="flex items-center justify-between mb-4">
             <div className="flex flex-col">
-              <span className="text-2xl font-black bg-gradient-primary bg-clip-text text-transparent">
+              <span className="product-price text-3xl font-black">
                 {formatCurrency(price)}
               </span>
               {stock_quantity !== null && stock_quantity > 0 && (
-                <span className="text-xs text-muted-foreground mt-1">
-                  {stock_quantity} in stock
+                <span className="text-sm text-muted-foreground/80 mt-1 font-medium">
+                  📦 {stock_quantity} in stock
                 </span>
               )}
             </div>
             {stock_quantity === 0 && (
-              <div className="bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                <span className="text-xs font-semibold">Unavailable</span>
+              <div className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-3 py-1.5 rounded-full border border-red-200 dark:border-red-800">
+                <span className="text-xs font-bold">❌ Out of Stock</span>
               </div>
             )}
           </div>
