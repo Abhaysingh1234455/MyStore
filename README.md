@@ -1,73 +1,69 @@
-# Welcome to your Lovable project
+# 🛒 MyStore – Full-Stack E-commerce Web App
 
-## Project info
+Welcome to **MyStore**, a full-featured, responsive e-commerce platform built using the MERN stack (MongoDB, Express, React, Node.js). This application enables users to browse products, place orders, make payments, track deliveries, and manage their wishlist — all through a seamless shopping experience.
 
-**URL**: https://lovable.dev/projects/62726a84-34b5-4932-98f5-15386327bcaf
+![MyStore Banner](https://via.placeholder.com/1200x300.png?text=MyStore+E-Commerce+Platform)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Features
 
-**Use Lovable**
+### 👤 User Features
+- Sign up / Login with JWT authentication
+- View and update user profile and address
+- Wishlist: Add or remove favorite products
+- Add products to cart and place orders
+- View order history and track delivery status
+- Cancel order (if not shipped)
+- Live chat support system (simulated)
+- Address is auto-filled if already saved
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/62726a84-34b5-4932-98f5-15386327bcaf) and start prompting.
+### 🛍️ Product Features
+- Product listing by category
+- Clickable product cards
+- Detailed product page with:
+  - 4 unique product images
+  - Product description
+  - ₹ Indian Rupee pricing
+  - Customer reviews and ratings
 
-Changes made via Lovable will be committed automatically to this repo.
+### 💳 Payment Features
+- Secure checkout with multiple payment methods:
+  - UPI
+  - Paytm (mock)
+  - Stripe (test card)
+- Orders only placed on successful payment
 
-**Use your preferred IDE**
+### 📦 Order Management
+- Backend updates stock on order placement
+- Prevents checkout for out-of-stock items
+- Cancel order API with status change
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 📱 Responsive UI
+- Fully optimized for mobile and tablet views
+- Animated transitions using Framer Motion
+- Modern UI with Tailwind CSS
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## 📁 Folder Structure
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/62726a84-34b5-4932-98f5-15386327bcaf) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```bash
+MyStore/
+├── client/              # React frontend
+│   ├── public/
+│   ├── src/
+│   │   ├── components/  # Navbar, ProductCard, Wishlist, etc.
+│   │   ├── pages/       # Home, ProductDetails, Orders, Profile
+│   │   ├── App.js
+│   │   └── ...
+│   └── package.json
+├── server/              # Node.js backend
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   ├── server.js
+│   └── package.json
+├── .env.example
+└── README.md

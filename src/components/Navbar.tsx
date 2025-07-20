@@ -32,7 +32,7 @@ const Navbar = () => {
           {/* Logo and Brand - Clickable */}
           <Link to="/" className="flex items-center space-x-3 hover:scale-105 transition-transform duration-200">
             <Logo />
-            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-primary bg-clip-text">
               MyStore
             </span>
           </Link>

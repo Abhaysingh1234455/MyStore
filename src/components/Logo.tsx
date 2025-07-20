@@ -25,11 +25,11 @@ export const Logo = ({ className = "", showText = true, size = "md" }: LogoProps
         <ShoppingBag className={`${sizeClasses[size]} text-primary`} />
         <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-primary rounded-full animate-bounce-gentle" />
       </div>
-      {showText && (
+      {/* {showText && (
         <span className={`font-bold bg-gradient-primary bg-clip-text text-transparent ${textSizeClasses[size]}`}>
           MyStore
         </span>
-      )}
+      )} */}
     </div>
   );
 };
