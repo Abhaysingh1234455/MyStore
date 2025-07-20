@@ -42,13 +42,19 @@ const Navbar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-6">
-            {user ? (
+            <Link 
+              to="/" 
+              className="text-foreground/80 hover:text-primary transition-colors duration-200 story-link"
+            >
+              Home
+            </Link>
+            {user && (
               <>
                 <Link 
-                  to="/" 
+                  to="/wishlist" 
                   className="text-foreground/80 hover:text-primary transition-colors duration-200 story-link"
                 >
-                  Home
+                  Wishlist
                 </Link>
                 <Link 
                   to="/orders" 
@@ -63,13 +69,6 @@ const Navbar = () => {
                   Profile
                 </Link>
               </>
-            ) : (
-              <Link 
-                to="/" 
-                className="text-foreground/80 hover:text-primary transition-colors duration-200 story-link"
-              >
-                Home
-              </Link>
             )}
           </div>
 
@@ -116,51 +115,25 @@ const Navbar = () => {
               </Button>
             </div>
 
-            {/* Desktop User menu */}
+            {/* Desktop User menu - simplified */}
             <div className="hidden md:block">
-              {!loading && (
-                <>
-                  {user ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <User className="h-5 w-5" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem asChild>
-                          <Link to="/profile" className="cursor-pointer">
-                            <User className="mr-2 h-4 w-4" />
-                            Profile
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to="/orders" className="cursor-pointer">
-                            <ShoppingCart className="mr-2 h-4 w-4" />
-                            Orders
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to="/wishlist" className="cursor-pointer">
-                            <Heart className="mr-2 h-4 w-4" />
-                            Wishlist
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                          <LogOut className="mr-2 h-4 w-4" />
-                          Sign Out
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
-                    <Link to="/auth">
-                      <Button variant="default" size="sm" className="hover-scale">
-                        Sign In
-                      </Button>
-                    </Link>
-                  )}
-                </>
+              {!loading && !user && (
+                <Link to="/auth">
+                  <Button variant="default" size="sm" className="hover-scale bg-gradient-primary">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
+              {user && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleSignOut}
+                  className="hover:bg-destructive/10 hover:text-destructive transition-colors"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
               )}
             </div>
           </div>
