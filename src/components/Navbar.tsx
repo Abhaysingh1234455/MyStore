@@ -29,33 +29,18 @@ const Navbar = () => {
     <nav className="bg-background/95 backdrop-blur-md border-b border-border/50 shadow-soft sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Brand */}
-          <div className="flex items-center space-x-3">
+          {/* Logo and Brand - Clickable */}
+          <Link to="/" className="flex items-center space-x-3 hover:scale-105 transition-transform duration-200">
             <Logo />
-            <Link 
-              to="/" 
-              className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent hover:scale-105 transition-transform duration-200"
-            >
+            <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               MyStore
-            </Link>
-          </div>
+            </span>
+          </Link>
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link 
-              to="/" 
-              className="text-foreground/80 hover:text-primary transition-colors duration-200 story-link"
-            >
-              Home
-            </Link>
             {user && (
               <>
-                <Link 
-                  to="/wishlist" 
-                  className="text-foreground/80 hover:text-primary transition-colors duration-200 story-link"
-                >
-                  Wishlist
-                </Link>
                 <Link 
                   to="/orders" 
                   className="text-foreground/80 hover:text-primary transition-colors duration-200 story-link"
@@ -146,13 +131,6 @@ const Navbar = () => {
               {user ? (
                 <>
                   <Link
-                    to="/"
-                    className="block px-3 py-2 text-foreground/80 hover:text-primary transition-colors duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Home
-                  </Link>
-                  <Link
                     to="/wishlist"
                     className="block px-3 py-2 text-foreground/80 hover:text-primary transition-colors duration-200"
                     onClick={() => setMobileMenuOpen(false)}
@@ -185,13 +163,6 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <Link
-                    to="/"
-                    className="block px-3 py-2 text-foreground/80 hover:text-primary transition-colors duration-200"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Home
-                  </Link>
                   <Link
                     to="/auth"
                     className="block px-3 py-2 text-foreground/80 hover:text-primary transition-colors duration-200"
