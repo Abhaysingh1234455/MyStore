@@ -129,11 +129,11 @@ export const ProductDetails = () => {
   const fetchProduct = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
 
       if (error) throw error;
       setProduct(data);

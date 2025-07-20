@@ -4,13 +4,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { Navbar } from "@/components/Navbar";
+import Navbar from "@/components/Navbar";
 import { Home } from "@/pages/Home";
 import { Auth } from "@/pages/Auth";
 import { Cart } from "@/pages/Cart";
 import { PlaceOrder } from "@/pages/PlaceOrder";
 import { OrderHistory } from "@/pages/OrderHistory";
 import { Profile } from "@/pages/Profile";
+import Wishlist from "@/pages/Wishlist";
 import { ProductDetails } from "@/pages/ProductDetails";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +33,7 @@ const App = () => (
               <Route path="/place-order" element={<PlaceOrder />} />
               <Route path="/orders" element={<OrderHistory />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/product/:id" element={<ProductDetails />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

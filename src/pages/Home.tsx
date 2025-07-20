@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { ProductCard } from '@/components/ProductCard';
+import ProductCard from '@/components/ProductCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -14,6 +14,7 @@ interface Product {
   description: string;
   price: number;
   image_url: string;
+  images: string[] | null;
   category: string;
   stock_quantity: number;
 }
@@ -203,7 +204,14 @@ export const Home = () => {
                   className="animate-fade-in"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <ProductCard product={product} />
+                  <ProductCard
+                    id={product.id}
+                    name={product.name}
+                    price={product.price}
+                    image_url={product.image_url}
+                    images={product.images}
+                    stock_quantity={product.stock_quantity}
+                  />
                 </div>
               ))}
             </div>

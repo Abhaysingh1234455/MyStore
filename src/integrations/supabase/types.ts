@@ -140,6 +140,7 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          images: string[] | null
           name: string
           price: number
           stock_quantity: number | null
@@ -151,6 +152,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
           name: string
           price: number
           stock_quantity?: number | null
@@ -162,6 +164,7 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          images?: string[] | null
           name?: string
           price?: number
           stock_quantity?: number | null
@@ -196,6 +199,27 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      wishlist: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
         }
         Relationships: []
       }
