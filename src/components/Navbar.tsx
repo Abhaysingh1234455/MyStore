@@ -104,7 +104,7 @@ const Navbar = () => {
             <div className="hidden md:block">
               {!loading && !user && (
                 <Link to="/auth">
-                  <Button variant="default" size="sm" className="hover-scale bg-gradient-primary">
+                  <Button variant="default" size="sm" className="hover-scale bg-gradient-primary text-black">
                     Sign In
                   </Button>
                 </Link>
